@@ -1,0 +1,12 @@
+{
+  "name": "Diary MiniApp",
+  "description": "A MiniApp to write and mint memories on Base network",
+  "start_url": "/",
+  "farcaster": {
+    "supports": ["frame", "miniapp"],
+    "actions": {
+      "install_url": "https://diary-msn9189-nazis-projects-62ec5c21.vercel.app/",
+      "notifications": true
+    }
+  }
+}
