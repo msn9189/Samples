@@ -8,7 +8,6 @@ import {
 } from "wagmi";
 import { parseAbi } from "viem";
 import "./index.css";
-import { sdk } from "@farcaster/frame-sdk";
 
 
 const contractAddress = "0x048f633DA5Fe4945290C2e71b0D404d77B67BA14"; // آدرس قراردادت رو اینجا بذار
@@ -97,4 +96,3 @@ export default function App() {
     </div>
   );
 }
-await sdk.actions.ready();
