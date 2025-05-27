@@ -9,7 +9,7 @@ import {
 import { parseAbi } from "viem";
 import "./index.css";
 
-const contractAddress = "0xYourContractAddress"; // آدرس قراردادت رو اینجا بذار
+const contractAddress = "0x048f633DA5Fe4945290C2e71b0D404d77B67BA14"; // آدرس قراردادت رو اینجا بذار
 const contractAbi = parseAbi([
   "function mintMemory(string memory _memory) public",
   "function getMemories(address _user) public view returns (string[] memory)",
