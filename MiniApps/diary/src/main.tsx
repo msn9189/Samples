@@ -5,7 +5,6 @@ import { WagmiProvider } from "wagmi";
 
 import App from "./App.tsx";
 import { config } from "./wagmi.ts";
-import { sdk } from "@farcaster/frame-sdk";
 
 
 import "./index.css";
@@ -22,4 +21,4 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   </React.StrictMode>,
 );
 
-await sdk.actions.ready();
+
