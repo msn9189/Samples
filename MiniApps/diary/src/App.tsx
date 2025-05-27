@@ -1,63 +1,97 @@
-import { sdk } from "@farcaster/frame-sdk";
-import { useEffect } from "react";
-import { useAccount, useConnect, useSignMessage } from "wagmi";
+import { useState } from "react";
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+} from "wagmi";
+import { parseAbi } from "viem";
+import "./index.css";
 
-function App() {
-  useEffect(() => {
-    sdk.actions.ready();
-  }, []);
+const contractAddress = "0xYourContractAddress"; // آدرس قراردادت رو اینجا بذار
+const contractAbi = parseAbi([
+  "function mintMemory(string memory _memory) public",
+  "function getMemories(address _user) public view returns (string[] memory)",
+]);
+
+export default function App() {
+  const [memory, setMemory] = useState<string>("");
+  const { address, isConnected } = useAccount(); // وضعیت اتصال و آدرس کیف‌پول
+  const { connect, connectors } = useConnect(); // برای اتصال کیف‌پول
+  const { disconnect } = useDisconnect(); // برای قطع اتصال
+  const { writeContract, data: txHash } = useWriteContract(); // برای فراخوانی قرارداد
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
+    hash: txHash,
+  }); // برای بررسی وضعیت تراکنش
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isConnected) {
+      alert("Please connect your wallet first!");
+      return;
+    }
+    // فراخوانی تابع mintMemory در قرارداد
+    writeContract({
+      address: contractAddress,
+      abi: contractAbi,
+      functionName: "mintMemory",
+      args: [memory],
+    });
+  };
 
   return (
-    <>
-      <div>Mini App + Vite + TS + React + Wagmi</div>
-      <ConnectMenu />
-    </>
-  );
-}
+    <div className="app">
+      <h1>Diary MiniApp</h1>
 
-function ConnectMenu() {
-  const { isConnected, address } = useAccount();
-  const { connect, connectors } = useConnect();
+      {/* بخش اتصال و قطع اتصال کیف‌پول */}
+      <div style={{ marginBottom: "20px" }}>
+        {isConnected ? (
+          <div>
+            <p>
+              Connected as: {address?.slice(0, 6)}...{address?.slice(-4)}
+            </p>
+            <button
+              onClick={() => disconnect()}
+              style={{ backgroundColor: "#ff4d4d" }}
+            >
+              Disconnect Wallet
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => connect({ connector: connectors[0] })}>
+            Connect Wallet
+          </button>
+        )}
+      </div>
 
-  if (isConnected) {
-    return (
-      <>
-        <div>Connected account:</div>
-        <div>{address}</div>
-        <SignButton />
-      </>
-    );
-  }
+      {/* فرم نوشتن خاطره */}
+      <form onSubmit={handleSubmit}>
+        <textarea
+          value={memory}
+          onChange={(e) => setMemory(e.target.value)}
+          placeholder="Write your memory here..."
+          rows={5}
+          style={{ width: "100%", padding: "10px" }}
+        />
+        <button type="submit" disabled={isLoading || !isConnected}>
+          {isLoading ? "Minting..." : "Mint Memory on Base"}
+        </button>
+      </form>
 
-  return (
-    <button type="button" onClick={() => connect({ connector: connectors[0] })}>
-      Connect
-    </button>
-  );
-}
-
-function SignButton() {
-  const { signMessage, isPending, data, error } = useSignMessage();
-
-  return (
-    <>
-      <button type="button" onClick={() => signMessage({ message: "hello world" })} disabled={isPending}>
-        {isPending ? "Signing..." : "Sign message"}
-      </button>
-      {data && (
-        <>
-          <div>Signature</div>
-          <div>{data}</div>
-        </>
+      {/* نمایش هش تراکنش */}
+      {isSuccess && txHash && (
+        <div>
+          <p>Memory minted! Transaction Hash:</p>
+          <a
+            href={`https://basescan.org/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {txHash}
+          </a>
+        </div>
       )}
-      {error && (
-        <>
-          <div>Error</div>
-          <div>{error.message}</div>
-        </>
-      )}
-    </>
+    </div>
   );
 }
-
-export default App;
