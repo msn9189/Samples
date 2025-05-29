@@ -1,3 +1,13 @@
 {
-  "manifest": "../manifest.json"
+  "miniapp": {
+    "version": "1",
+    "name": "Diary MiniApp",
+    "iconUrl": "https://diary-nazis-projects-62ec5c21.vercel.app/icon.png",
+    "homeUrl": "https://diary-nazis-projects-62ec5c21.vercel.app.app/",
+    "buttonTitle": "📝 Write Memory",
+    "splashImageUrl": "https://diary-nazis-projects-62ec5c21.vercel.app/icon.png",
+    "splashBackgroundColor": "#ffffff",
+    "requiredChains": ["eip155:8453"],
+    "requiredCapabilities": ["wallet.getEthereumProvider"]
+  }
 }
