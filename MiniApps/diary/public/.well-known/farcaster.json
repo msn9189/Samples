@@ -2,10 +2,10 @@
   "frame": {
     "version": "1",
     "name": "Diary MiniApp",
-    "iconUrl": "https://diary-nazis-projects-62ec5c21.vercel.app/icon.png",
-    "homeUrl": "https://diary-nazis-projects-62ec5c21.vercel.app.app/",
+    "iconUrl": "https://diary-miniapp.vercel.app/icon.png",
+    "homeUrl": "https://ddiary-miniapp.vercel.app/",
     "buttonTitle": "📝 Write Memory",
-    "splashImageUrl": "https://diary-nazis-projects-62ec5c21.vercel.app/icon.png",
+    "splashImageUrl": "https://diary-miniapp.vercel.app/icon.png",
     "splashBackgroundColor": "#ffffff",
     "requiredChains": ["eip155:8453"],
     "requiredCapabilities": ["wallet.getEthereumProvider"]

@@ -5,7 +5,7 @@
   "farcaster": {
     "supports": ["miniapp"],
     "actions": {
-      "install_url": "https://diary-nazis-projects-62ec5c21.vercel.app",
+      "install_url": "https://diary-miniapp.vercel.app",
       "notifications": true
     }
   }
