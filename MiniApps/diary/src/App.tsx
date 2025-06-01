@@ -10,7 +10,7 @@ import { parseAbi } from "viem";
 import "./index.css";
 
 
-const contractAddress = "0x048f633DA5Fe4945290C2e71b0D404d77B67BA14"; // آدرس قراردادت رو اینجا بذار
+const contractAddress = "0x048f633DA5Fe4945290C2e71b0D404d77B67BA14"; //Put the contract's address here
 const contractAbi = parseAbi([
   "function mintMemory(string memory _memory) public",
   "function getMemories(address _user) public view returns (string[] memory)",
@@ -18,13 +18,13 @@ const contractAbi = parseAbi([
 
 export default function App() {
   const [memory, setMemory] = useState<string>("");
-  const { address, isConnected } = useAccount(); // وضعیت اتصال و آدرس کیف‌پول
-  const { connect, connectors } = useConnect(); // برای اتصال کیف‌پول
-  const { disconnect } = useDisconnect(); // برای قطع اتصال
-  const { writeContract, data: txHash } = useWriteContract(); // برای فراخوانی قرارداد
+  const { address, isConnected } = useAccount(); // connection status and the address of wallet
+  const { connect, connectors } = useConnect(); // For Connecting wallet
+  const { disconnect } = useDisconnect(); // For disconnecting 
+  const { writeContract, data: txHash } = useWriteContract(); // For calling the contract
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
     hash: txHash,
-  }); // برای بررسی وضعیت تراکنش
+  }); //Transaction's status
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ export default function App() {
       alert("Please connect your wallet first!");
       return;
     }
-    // فراخوانی تابع mintMemory در قرارداد
+    // Callin minMemory Function of the contract
     writeContract({
       address: contractAddress,
       abi: contractAbi,
@@ -45,7 +45,7 @@ export default function App() {
     <div className="app">
       <h1>Diary MiniApp</h1>
 
-      {/* بخش اتصال و قطع اتصال کیف‌پول */}
+      {/* connect and disconnect wallet */}
       <div style={{ marginBottom: "20px" }}>
         {isConnected ? (
           <div>
@@ -66,7 +66,7 @@ export default function App() {
         )}
       </div>
 
-      {/* فرم نوشتن خاطره */}
+      {/* The form to write Your memory here*/}
       <form onSubmit={handleSubmit}>
         <textarea
           value={memory}
@@ -80,7 +80,7 @@ export default function App() {
         </button>
       </form>
 
-      {/* نمایش هش تراکنش */}
+      {/* Showing transaction hash */}
       {isSuccess && txHash && (
         <div>
           <p>Memory minted! Transaction Hash:</p>
