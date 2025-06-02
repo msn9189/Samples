@@ -1,13 +1,13 @@
 import { createConfig, http } from "wagmi";
 import { base } from "wagmi/chains";
-import { injected } from "wagmi/connectors"; // برای MetaMask و کیف‌پول‌های تزریقی
+import { injected } from "wagmi/connectors"; // For Metamask and injected wallets
 
 export const config = createConfig({
   chains: [base],
   connectors: [
-    injected(), // این MetaMask و سایر کیف‌پول‌های تزریقی رو ساپورت می‌کنه
+    injected(), // It supports Metamask and other injected wallets
   ],
   transports: {
-    [base.id]: http("https://mainnet.base.org"), // یا RPC URL خودت
+    [base.id]: http("https://mainnet.base.org"), //RPC URL for connecting to Base network
   },
 });
