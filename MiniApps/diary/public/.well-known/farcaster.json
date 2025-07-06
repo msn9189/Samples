@@ -11,7 +11,7 @@
     "homeUrl": "https://diary-miniapp.vercel.app/",
     "buttonTitle": "📝 Write Memory",
     "splashImageUrl": "https://diary-miniapp.vercel.app/splashImage.png",
-    "splashBackgroundColor": "#ffffff",
+    "splashBackgroundColor": "#3cde07",
     "requiredChains": ["eip155:8453"],
     "requiredCapabilities": ["wallet.getEthereumProvider"]
   }
