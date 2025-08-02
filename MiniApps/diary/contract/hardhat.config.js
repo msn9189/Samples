@@ -16,7 +16,7 @@ module.exports = {
       accounts: [PRIVATE_KEY],
     },
     base: {
-      url: `https://mainnet.base.org`,
+      url: `https://base-mainnet.infura.io/v3/${INFURA_API_KEY}`,
       accounts: [PRIVATE_KEY],
     },
   },
