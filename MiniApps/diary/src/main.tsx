@@ -26,7 +26,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 );
 
 // Farcaster Frame initialization
-sdk.actions.ready();
+await sdk.actions.ready();
 // sdk.actions.ready({
 //   target: window.location.href, // Current URL as target
 //   buttons: [
