@@ -7,9 +7,11 @@ import App from "./App.tsx";
 import { config } from "./wagmi.ts";
 
 import { sdk } from "@farcaster/frame-sdk"; 
-
-
+import dotenv from 'dotenv';
 import "./index.css";
+
+// Load environment variabled from .env
+dotenv.config();
 
 const queryClient = new QueryClient();
 
@@ -23,5 +25,18 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   </React.StrictMode>,
 );
 
+// Farcaster Frame initialization
 sdk.actions.ready();
+// sdk.actions.ready({
+//   target: window.location.href, // Current URL as target
+//   buttons: [
+//     {
+//       label: "Mint Memory", //Button label for Frame
+//       action: "post", // Action type for Farcaster
+//       actionBody: { type: "text", value: "Minting via Frame..."}, // Message during mint
+//     },
+//   ],
+//   image: "https://",
+//   postUrl: window.location.href, // URL to handle Fram posts
+// });
 
