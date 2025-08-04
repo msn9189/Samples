@@ -20,8 +20,8 @@ const contractAbi = parseAbi([
 
 // Initialize Pinata SDK with environment variables from .env
 const pinata = new PinataSDK({
-  pinataApiKey: process.env.PINATA_API_KEY,
-  pinataSecretApiKey: process.env.PINATA_API_SECRET,
+  apiKey: process.env.PINATA_API_KEY || "",
+  apiSecret: process.env.PINATA_API_SECRET || "",
 });
 
 export default function App() {
@@ -58,7 +58,7 @@ export default function App() {
       };
 
       const result = await pinata.upload.json(metadata);
-      const ipfsHash = result.IpfsHash;
+      const ipfsHash = result.data.IpfsHash;
 
       setStatus("Minting NFT ...");
       writeContract({
@@ -77,12 +77,12 @@ export default function App() {
   const handleFrameMint = async () => {
     if(!isConnected || !memory) return;
     setStatus("Processing Frame mint...");
-    const ipfsHash = (await pinata.pinJSONToIPFS({
+    const ipfsHash = (await pinata.upload.json({
       name: "Diary Entry",
       description: "A personal memory",
       content: memory,
       date: new Date().toISOString(),
-    })).IpfsHash;
+    })).data.IpfsHash;
     writeContract({
       address: contractAddress,
       abi: contractAbi,
