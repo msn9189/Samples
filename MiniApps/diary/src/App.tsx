@@ -20,8 +20,8 @@ const contractAbi = parseAbi([
 
 // Initialize Pinata SDK with environment variables from .env
 const pinata = new PinataSDK({
-  pinataApiKey: process.env.PINATA_API_KEY || "",
-  pinataSecretApiKey: process.env.PINATA_API_SECRET || "",
+  pinataApiKey: import.meta.env.VITE_PINATA_API_KEY || "",
+  pinataSecretApiKey: import.meta.env.VITE_PINATA_API_SECRET || "",
 });
 
 export default function App() {
