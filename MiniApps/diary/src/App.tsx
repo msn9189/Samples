@@ -9,7 +9,7 @@ import {
 import { parseAbi } from "viem";
 import PinataSDK from "@pinata/sdk"; 
 import "./index.css";
-import { sdk } from "@farcaster/frame-sdk";
+import { sdk } from "@farcaster/miniapp-sdk";
 
 // Contract address deployed on Base network
 const contractAddress = "0x5df26eAa1753cf24Ead918b3372Be1f0C517dDE9"; 
@@ -43,7 +43,9 @@ export default function App() {
       // Optionally wait for context if you plan to use it:
       // const context = await sdk.context;
 
+      console.log("Calling sdk.actions.ready…");
       await sdk.actions.ready();
+      console.log("Ready fired");
       setSdkLoaded(true);
     }
     if (!sdkLoaded) {
