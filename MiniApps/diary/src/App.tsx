@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState} from "react";
 import {
   useAccount,
   useConnect,
@@ -9,7 +9,7 @@ import {
 import { parseAbi } from "viem";
 import PinataSDK from "@pinata/sdk"; 
 import "./index.css";
-import { sdk } from "@farcaster/miniapp-sdk";
+import { sdk } from "@farcaster/frame-sdk";
 
 // Contract address deployed on Base network
 const contractAddress = "0x5df26eAa1753cf24Ead918b3372Be1f0C517dDE9"; 
