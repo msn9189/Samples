@@ -5,8 +5,6 @@ import { WagmiProvider } from "wagmi";
 
 import App from "./App.tsx";
 import { config } from "./wagmi.ts";
-
-import { sdk } from "@farcaster/miniapp-sdk";
 import dotenv from 'dotenv';
 import "./index.css";
 
