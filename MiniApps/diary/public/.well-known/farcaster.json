@@ -4,7 +4,7 @@
     "payload": "eyJkb21haW4iOiJkaWFyeS1taW5pYXBwLnZlcmNlbC5hcHAifQ",
     "signature": "MHg3ODRmMmEwNGNlYTRmMTE0MzZhNjE0Y2IxN2YyYTcxOWViMWY2YmVlNzQ1MGI2NmE5ZmFmZjRhZTgwMTRkMTA3NDU3MDdmMDAxNDhhYjIyZWM5MDRhYmIzMDYwNWQwODI1MWUzMzJkZmM1MzEyNjJjY2QwMzEyZjMxMTJhMGE4MDFi"
   },
-  "frame": {
+  "miniapp": {
     "version": "1",
     "name": "Diary MiniApp",
     "iconUrl": "https://diary-miniapp.vercel.app/icon.png",
@@ -13,6 +13,6 @@
     "splashImageUrl": "https://diary-miniapp.vercel.app/splashImage.png",
     "splashBackgroundColor": "#3cde07",
     "requiredChains": ["eip155:8453"],
-    "requiredCapabilities": ["wallet.getEthereumProvider"]
+    "requiredCapabilities": ["wallet.getEthereumProvider", "actions.ready"]
   }
 }

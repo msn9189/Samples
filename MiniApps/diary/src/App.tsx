@@ -9,14 +9,14 @@ import {
 import { parseAbi } from "viem";
 import PinataSDK from "@pinata/sdk"; 
 import "./index.css";
-import { sdk } from "@farcaster/frame-sdk";
+import { sdk } from "@farcaster/miniapp-sdk";
 
 // Contract address deployed on Base network
 const contractAddress = "0x5df26eAa1753cf24Ead918b3372Be1f0C517dDE9"; 
 const contractAbi = parseAbi([
   "function mintDiary(string memory ipfsHash) public returns (uint256)",
   "event DiaryMinted(uint256 indexed tokenId, address indexed recipient, string ipfsHash)",
-  "function tokenIds(uint256 tokneId) public view returns (uint256)",
+  "function tokenIds(uint256 tokenId) public view returns (uint256)",
 ]);
 
 // Initialize Pinata SDK with environment variables from .env
@@ -49,9 +49,9 @@ export default function App() {
       setSdkLoaded(true);
     }
     if (!sdkLoaded) {
-      initSdk();
+      initSdk().catch(console.error); //Ensure async errors are caught
     }
-  }, [sdkLoaded]);
+  }, []); // Empty dependency array ensures it runs once on mount
 
   if (!sdkLoaded) {
     return <div>Loading mini app…</div>;
@@ -75,7 +75,7 @@ export default function App() {
         name: "Diary Entry",
         description: "A personal memory",
         content: memory,
-        data: new Date().toISOString(),
+        date: new Date().toISOString(),
       };
 
       const result = await pinata.pinJSONToIPFS(metadata);
