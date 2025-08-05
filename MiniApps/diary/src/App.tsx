@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useAccount,
   useConnect,
@@ -8,6 +8,7 @@ import {
 } from "wagmi";
 import { parseAbi } from "viem";
 import PinataSDK from "@pinata/sdk"; 
+import { sdk } from "@farcaster/frame-sdk";
 import "./index.css";
 
 // Contract address deployed on Base network
@@ -36,6 +37,14 @@ export default function App() {
     hash: txHashData,
   }); // Transaction receipt status
 
+  // Call sdk.actions.ready() after component mounts
+  useEffect(() => {
+    const initializeFarcaster = async () => {
+      await sdk.actions.ready();
+    };
+    initializeFarcaster();
+  }, []); // Empty dependency array ensures it runs once on mount
+
   // Handle form submission to mint NFT
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +58,7 @@ export default function App() {
     }
 
     setStatus("Uploading to IPFS...");
-    try{
+    try {
       const metadata = {
         name: "Diary Entry",
         description: "A personal memory",
@@ -75,14 +84,16 @@ export default function App() {
 
   // Handle minting via Farcaster Frame
   const handleFrameMint = async () => {
-    if(!isConnected || !memory) return;
+    if (!isConnected || !memory) return;
     setStatus("Processing Frame mint...");
-    const ipfsHash = (await pinata.pinJSONToIPFS({
-      name: "Diary Entry",
-      description: "A personal memory",
-      content: memory,
-      date: new Date().toISOString(),
-    })).IpfsHash;
+    const ipfsHash = (
+      await pinata.pinJSONToIPFS({
+        name: "Diary Entry",
+        description: "A personal memory",
+        content: memory,
+        date: new Date().toISOString(),
+      })
+    ).IpfsHash;
     writeContract({
       address: contractAddress,
       abi: contractAbi,
