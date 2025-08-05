@@ -8,6 +8,8 @@ import { config } from "./wagmi.ts";
 import dotenv from 'dotenv';
 import "./index.css";
 
+
+
 // Load environment variabled from .env
 dotenv.config();
 
@@ -22,4 +24,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     </WagmiProvider>
   </React.StrictMode>,
 );
+
 

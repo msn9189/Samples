@@ -8,8 +8,8 @@ import {
 } from "wagmi";
 import { parseAbi } from "viem";
 import PinataSDK from "@pinata/sdk"; 
-import { sdk } from "@farcaster/frame-sdk";
 import "./index.css";
+import { sdk } from "@farcaster/frame-sdk";
 
 // Contract address deployed on Base network
 const contractAddress = "0x5df26eAa1753cf24Ead918b3372Be1f0C517dDE9"; 
@@ -36,14 +36,24 @@ export default function App() {
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
     hash: txHashData,
   }); // Transaction receipt status
+  const [sdkLoaded, setSdkLoaded] = useState(false);
 
-  // Call sdk.actions.ready() after component mounts
   useEffect(() => {
-    const initializeFarcaster = async () => {
+    async function initSdk() {
+      // Optionally wait for context if you plan to use it:
+      // const context = await sdk.context;
+
       await sdk.actions.ready();
-    };
-    initializeFarcaster();
-  }, []); // Empty dependency array ensures it runs once on mount
+      setSdkLoaded(true);
+    }
+    if (!sdkLoaded) {
+      initSdk();
+    }
+  }, [sdkLoaded]);
+
+  if (!sdkLoaded) {
+    return <div>Loading mini app…</div>;
+  }
 
   // Handle form submission to mint NFT
   const handleSubmit = async (e: React.FormEvent) => {
