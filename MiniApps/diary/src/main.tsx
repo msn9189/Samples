@@ -6,7 +6,7 @@ import { WagmiProvider } from "wagmi";
 import App from "./App.tsx";
 import { config } from "./wagmi.ts";
 
-import { sdk } from "@farcaster/frame-sdk"; 
+import { sdk } from "@farcaster/miniapp-sdk";
 import dotenv from 'dotenv';
 import "./index.css";
 
@@ -26,7 +26,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 );
 
 // Farcaster Frame initialization
-await sdk.actions.ready();
+sdk.actions.ready()
 // sdk.actions.ready({
 //   target: window.location.href, // Current URL as target
 //   buttons: [
