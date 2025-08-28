@@ -7,7 +7,7 @@
   "miniapp": {
     "version": "1",
     "name": "Diary MiniApp",
-    "iconUrl": "https://diary-miniapp.vercel.app/icon.png",
+    "iconUrl": "https://diary-miniapp.vercel.app/DiaryLogo.jpg",
     "homeUrl": "https://diary-miniapp.vercel.app/",
     "buttonTitle": "📝 Write Memory",
     "splashBackgroundColor": "#3cde07",
