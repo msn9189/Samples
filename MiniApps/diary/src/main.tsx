@@ -7,7 +7,7 @@ import App from "./App.tsx";
 import { config } from "./wagmi.ts";
 import dotenv from 'dotenv';
 import "./index.css";
-//import { sdk } from "@farcaster/frame-sdk";
+import { sdk } from "@farcaster/frame-sdk";
 
 
 
@@ -27,4 +27,4 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 );
 
 
-//sdk.actions.ready();
+sdk.actions.ready();
