@@ -7,8 +7,6 @@ import App from "./App.tsx";
 import { config } from "./wagmi.ts";
 import dotenv from 'dotenv';
 import "./index.css";
-import { sdk } from "@farcaster/frame-sdk";
-
 
 
 // Load environment variabled from .env
@@ -25,6 +23,3 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     </WagmiProvider>
   </React.StrictMode>,
 );
-
-
-sdk.actions.ready();
