@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   useAccount,
   useConnect,
@@ -9,7 +9,7 @@ import {
 import { parseAbi } from "viem";
 import PinataSDK from "@pinata/sdk"; 
 import "./index.css";
-import { sdk } from "@farcaster/frame-sdk";
+// import { sdk } from "@farcaster/miniapp-sdk";
 
 // Contract address deployed on Base network
 const contractAddress = "0x5df26eAa1753cf24Ead918b3372Be1f0C517dDE9"; 
@@ -37,15 +37,6 @@ export default function App() {
     hash: txHashData,
   });
 
-  // Call sdk.actions.ready() after component mounts
-  useEffect(() => {
-    async function initSdk() {
-      console.log("Calling sdk.actions.ready…");
-      await sdk.actions.ready();
-      console.log("Ready fired");
-    }
-    initSdk().catch(console.error);
-  }, []); // Runs once after mount
 
   // Handle form submission to mint NFT
   const handleSubmit = async (e: React.FormEvent) => {
@@ -163,3 +154,27 @@ export default function App() {
     </div>
   );
 }
+
+  // Call sdk.actions.ready() after component mounts
+  // useEffect(() => {
+  //   async function initSdk() {
+  //     console.log("Calling sdk.actions.ready…");
+  //     if (!sdk || !sdk.actions) {
+  //       console.error("SDK or actions not available");
+  //       return;
+  //     }
+  //     console.log("Calling sdk.actions.ready...");
+  //     try{
+  //       await sdk.actions.ready({
+  //       image:
+  //         import.meta.env.VITE_FRAME_IMAGE_URL ||
+  //         "https://diary-miniapp.vercel.app/DiaryLogo.jpg",
+  //         postUrl: window.location.href,
+  //     });
+  //     console.log("Ready fired");
+  //     } catch (error) {
+  //       console.error("Ready call failed:", error);
+  //     }
+  //   }
+  //   initSdk();
+  // }, []); // Runs once after mount
