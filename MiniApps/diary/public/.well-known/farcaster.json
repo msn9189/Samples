@@ -7,11 +7,11 @@
   "frame": {
     "version": "1",
     "name": "Diary MiniApp",
-    "iconUrl": "https://diary-miniapp.vercel.app/icon.png",
+    "iconUrl": "https://diary-miniapp.vercel.app/DiaryLogo.png",
     "homeUrl": "https://diary-miniapp.vercel.app/",
     "buttonTitle": "📝 Write Memory",
-    "splashImageUrl": "https://diary-miniapp.vercel.app/splashImage.png",
-    "splashBackgroundColor": "#3cde07",
+    "splashImageUrl": "https://diary-miniapp.vercel.app/DiaryLogo.png",
+    "splashBackgroundColor": "#009951",
     "requiredChains": ["eip155:8453"],
     "requiredCapabilities": ["wallet.getEthereumProvider"]
   }
