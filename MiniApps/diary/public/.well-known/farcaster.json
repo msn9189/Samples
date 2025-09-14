@@ -4,11 +4,13 @@
     "payload": "eyJkb21haW4iOiJkaWFyeS1taW5pYXBwLnZlcmNlbC5hcHAifQ",
     "signature": "MHg3ODRmMmEwNGNlYTRmMTE0MzZhNjE0Y2IxN2YyYTcxOWViMWY2YmVlNzQ1MGI2NmE5ZmFmZjRhZTgwMTRkMTA3NDU3MDdmMDAxNDhhYjIyZWM5MDRhYmIzMDYwNWQwODI1MWUzMzJkZmM1MzEyNjJjY2QwMzEyZjMxMTJhMGE4MDFi"
   },
-  "miniapp": {
+  "frame": {
     "version": "1",
     "name": "Diary MiniApp",
     "iconUrl": "https://diary-miniapp.vercel.app/DiaryLogo.jpg",
     "homeUrl": "https://diary-miniapp.vercel.app/",
+    "image": "https://diary-miniapp.vercel.app/diarynft.png",
+    "postUrl": "https://diary-miniapp.vercel.app",
     "buttonTitle": "📝 Write Memory",
     "splashBackgroundColor": "#3cde07",
     "requiredChains": ["eip155:8453"],
