@@ -13,8 +13,12 @@ export default function App() {
       try {
         if (sdk && sdk.actions) {
           await sdk.actions.ready({
-            image: import.meta.env.VITE_FRAME_IMAGE_URL || "",
-            postUrl: import.meta.env.VITE_APP_URL || "",
+            image:
+              import.meta.env.VITE_FRAME_IMAGE_URL ||
+              "https://diary-miniapp.vercel.app/DiaryLogo.jpg",
+            postUrl:
+              import.meta.env.VITE_APP_URL ||
+              "https://diary-miniapp.vercel.app",
           });
           console.log("Farcaster ready fired");
         }
