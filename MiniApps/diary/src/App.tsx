@@ -12,14 +12,7 @@ export default function App() {
     async function initSdk() {
       try {
         if (sdk && sdk.actions) {
-          await sdk.actions.ready({
-            image:
-              import.meta.env.VITE_FRAME_IMAGE_URL ||
-              "https://diary-miniapp.vercel.app/DiaryLogo.jpg",
-            postUrl:
-              import.meta.env.VITE_APP_URL ||
-              "https://diary-miniapp.vercel.app",
-          });
+          await sdk.actions.ready({});
           console.log("Farcaster ready fired");
         }
       } catch (error) {

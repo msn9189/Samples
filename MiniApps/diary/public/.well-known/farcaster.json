@@ -9,11 +9,9 @@
     "name": "Diary MiniApp",
     "iconUrl": "https://diary-miniapp.vercel.app/DiaryLogo.jpg",
     "homeUrl": "https://diary-miniapp.vercel.app/",
-    "image": "https://diary-miniapp.vercel.app/diarynft.png",
-    "postUrl": "https://diary-miniapp.vercel.app",
     "buttonTitle": "📝 Write Memory",
     "splashBackgroundColor": "#3cde07",
     "requiredChains": ["eip155:8453"],
-    "requiredCapabilities": ["wallet.getEthereumProvider", "actions.ready"]
+    "requiredCapabilities": ["wallet.getEthereumProvider"]
   }
 }
