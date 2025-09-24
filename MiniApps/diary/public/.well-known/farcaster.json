@@ -12,6 +12,14 @@
     "buttonTitle": "📝 Write Memory",
     "splashBackgroundColor": "#3cde07",
     "requiredChains": ["eip155:8453"],
-    "requiredCapabilities": ["wallet.getEthereumProvider"]
+    "requiredCapabilities": ["wallet.getEthereumProvider"],
+    "actions": [
+      {
+        "id": "open_diary",
+        "actionType": "open",
+        "name": "Open Diary",
+        "description": "Open the Diary MiniApp to write and mint a memory"
+      }
+    ]
   }
 }
