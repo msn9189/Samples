@@ -62,7 +62,7 @@ export default function App() {
         await sdk.actions.ready({
           image:
             import.meta.env.VITE_FRAME_IMAGE_URL ||
-            "https://diary-miniapp.vercel.app/DiaryLogo.jpg",
+            "https://diaryminiapp.vercel.app/DiaryLogo.jpg",
           postUrl: window.location.href,
         });
 
