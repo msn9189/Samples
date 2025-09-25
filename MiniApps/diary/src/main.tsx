@@ -5,12 +5,12 @@ import { WagmiProvider } from "wagmi";
 
 import App from "./App.tsx";
 import { config } from "./wagmi.ts";
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 import "./index.css";
 
 
-// Load environment variabled from .env
-dotenv.config();
+// // Load environment variabled from .env
+// dotenv.config();
 
 const queryClient = new QueryClient();
 
