@@ -7,7 +7,6 @@ import {
   useWaitForTransactionReceipt,
 } from "wagmi";
 import { parseAbi } from "viem";
-import PinataSDK from "@pinata/sdk";
 import "./index.css";
 import { sdk } from "@farcaster/miniapp-sdk";
 
@@ -73,19 +72,23 @@ export default function App() {
     })();
   }, []);
 
-  // --- Optional: pin content to Pinata (example)
+  // جایگزین pinToPinata در client (App.tsx)
   const pinToPinata = async (text: string) => {
     try {
-      const pinata = new PinataSDK(
-        import.meta.env.VITE_PINATA_API_KEY || "",
-        import.meta.env.VITE_PINATA_API_SECRET || ""
-      );
-      const result = await pinata.pinJSONToIPFS({
-        content: { memory: text, timestamp: Date.now() },
+      const resp = await fetch("/api/pinToIpfs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ memory: text }),
       });
-      return result.IpfsHash;
+      const data = await resp.json();
+      if (!resp.ok) {
+        console.error("Pin API error:", data);
+        return null;
+      }
+      // data.IpfsHash => CID
+      return data.IpfsHash;
     } catch (err) {
-      console.error("Pinata pin failed:", err);
+      console.error("Pin API request failed:", err);
       return null;
     }
   };
