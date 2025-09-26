@@ -17,12 +17,12 @@
     "@pinata/sdk": "^2.1.0",
     "@tanstack/react-query": "5.45.1",
     "dotenv": "^17.2.1",
-    "ethers": "^5.7.2",
+    "ethers": "^5.8.0",
     "node": "^22.18.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "viem": "latest",
-    "wagmi": "latest"
+    "viem": "^2.37.8",
+    "wagmi": "^2.17.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.0",
