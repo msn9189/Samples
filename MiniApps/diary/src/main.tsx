@@ -5,11 +5,12 @@ import { WagmiProvider } from "wagmi";
 
 import App from "./App.tsx";
 import { config } from "./wagmi.ts";
-
-import { sdk } from "@farcaster/frame-sdk"; 
-
-
+// import dotenv from 'dotenv';
 import "./index.css";
+
+
+// // Load environment variabled from .env
+// dotenv.config();
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,3 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     </WagmiProvider>
   </React.StrictMode>,
 );
-
-sdk.actions.ready();
-

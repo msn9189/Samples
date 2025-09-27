@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useAccount,
   useConnect,
@@ -8,56 +8,140 @@ import {
 } from "wagmi";
 import { parseAbi } from "viem";
 import "./index.css";
+import { sdk } from "@farcaster/miniapp-sdk";
 
+// -----------------------------
+// Diary Miniapp flow:
+// 1) User writes memory
+// 2) Pin to IPFS
+// 3) Mint NFT via contract (Base network)
+// 4) Show transaction hash
+// -----------------------------
 
-const contractAddress = "0x048f633DA5Fe4945290C2e71b0D404d77B67BA14"; // آدرس قراردادت رو اینجا بذار
-const contractAbi = parseAbi([
-  "function mintMemory(string memory _memory) public",
-  "function getMemories(address _user) public view returns (string[] memory)",
+const CONTRACT_ADDRESS = "0x5df26eAa1753cf24Ead918b3372Be1f0C517dDE9";
+const CONTRACT_ABI = parseAbi([
+  "function mintDiary(string memory ipfsHash) public returns (uint256)",
+  "event DiaryMinted(uint256 indexed tokenId, address indexed recipient, string ipfsHash)",
+  "function tokenIds(uint256 tokenId) public view returns (uint256)",
 ]);
 
 export default function App() {
+  // --- state
   const [memory, setMemory] = useState<string>("");
-  const { address, isConnected } = useAccount(); // وضعیت اتصال و آدرس کیف‌پول
-  const { connect, connectors } = useConnect(); // برای اتصال کیف‌پول
-  const { disconnect } = useDisconnect(); // برای قطع اتصال
-  const { writeContract, data: txHash } = useWriteContract(); // برای فراخوانی قرارداد
-  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
-    hash: txHash,
-  }); // برای بررسی وضعیت تراکنش
+  const [status, setStatus] = useState<string>("");
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isConnected) {
-      alert("Please connect your wallet first!");
-      return;
-    }
-    // فراخوانی تابع mintMemory در قرارداد
-    writeContract({
-      address: contractAddress,
-      abi: contractAbi,
-      functionName: "mintMemory",
-      args: [memory],
+  // --- wagmi hooks
+  const { address, isConnected } = useAccount();
+  const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect();
+
+  // writeContract hook
+  const writeResult = useWriteContract();
+  const writeContract = writeResult.writeContract;
+  const txHash = writeResult.data as string | undefined;
+
+  // wait for tx receipt
+  const { isLoading: waitingForReceipt, isSuccess } =
+    useWaitForTransactionReceipt({
+      hash: txHash as any,
     });
+
+  useEffect(() => {
+    // notify Farcaster that app is ready
+    (async () => {
+      try {
+        if (!sdk?.actions?.ready) return;
+
+        await sdk.actions.ready({
+          image:
+            import.meta.env.VITE_FRAME_IMAGE_URL ||
+            "https://diaryminiapp.vercel.app/DiaryLogo.jpg",
+          postUrl: window.location.href,
+        });
+
+        console.log("Farcaster sdk.actions.ready() called successfully");
+      } catch (err) {
+        console.error("sdk.actions.ready() failed:", err);
+      }
+    })();
+  }, []);
+
+  // pin to IPFS
+  const pinToPinata = async (text: string) => {
+    try {
+      const resp = await fetch("/api/pinToIpfs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ memory: text }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        console.error("Pin API error:", data);
+        return null;
+      }
+      return data.IpfsHash; // CID
+    } catch (err) {
+      console.error("Pin API request failed:", err);
+      return null;
+    }
   };
 
-  return (
-    <div className="app">
-      <h1>Diary MiniApp</h1>
+  // handle submit
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!memory) return setStatus("Write something first");
 
-      {/* بخش اتصال و قطع اتصال کیف‌پول */}
-      <div style={{ marginBottom: "20px" }}>
+    if (!isConnected) {
+      try {
+        await connect({ connector: connectors[0] });
+      } catch (err: any) {
+        return setStatus("Please connect your wallet.");
+      }
+    }
+
+    setStatus("Pinning to IPFS...");
+    const cid = await pinToPinata(memory);
+    if (!cid) return setStatus("Pin failed");
+
+    const payload = cid.startsWith("ipfs://") ? cid : `ipfs://${cid}`;
+
+    setStatus("Sending transaction...");
+    try {
+      setIsSending(true);
+
+      writeContract({
+        address: CONTRACT_ADDRESS,
+        abi: CONTRACT_ABI,
+        functionName: "mintDiary",
+        args: [payload],
+      } as any);
+
+      setStatus("Transaction sent, waiting for receipt...");
+    } catch (err: any) {
+      console.error("writeContract failed:", err);
+      setIsSending(false);
+      setStatus(`Error: ${err?.message ?? String(err)}`);
+    }
+  };
+
+  // when receipt is confirmed
+  useEffect(() => {
+    if (isSuccess) {
+      setIsSending(false);
+      setStatus("Memory minted successfully!");
+    }
+  }, [isSuccess]);
+
+  return (
+    <div className="app-container">
+      <h1>Diary Miniapp</h1>
+
+      <div style={{ marginBottom: 12 }}>
         {isConnected ? (
           <div>
-            <p>
-              Connected as: {address?.slice(0, 6)}...{address?.slice(-4)}
-            </p>
-            <button
-              onClick={() => disconnect()}
-              style={{ backgroundColor: "#ff4d4d" }}
-            >
-              Disconnect Wallet
-            </button>
+            <span>Connected: {address}</span>
+            <button onClick={() => disconnect()}>Disconnect</button>
           </div>
         ) : (
           <button onClick={() => connect({ connector: connectors[0] })}>
@@ -66,7 +150,8 @@ export default function App() {
         )}
       </div>
 
-      {/* فرم نوشتن خاطره */}
+      <p>{status}</p>
+
       <form onSubmit={handleSubmit}>
         <textarea
           value={memory}
@@ -75,19 +160,25 @@ export default function App() {
           rows={5}
           style={{ width: "100%", padding: "10px" }}
         />
-        <button type="submit" disabled={isLoading || !isConnected}>
-          {isLoading ? "Minting..." : "Mint Memory on Base"}
-        </button>
+        <div style={{ marginTop: 8 }}>
+          <button
+            type="submit"
+            disabled={isSending || waitingForReceipt || !isConnected}
+          >
+            {isSending || waitingForReceipt
+              ? "Minting..."
+              : "Mint Memory on Base"}
+          </button>
+        </div>
       </form>
 
-      {/* نمایش هش تراکنش */}
       {isSuccess && txHash && (
-        <div>
+        <div style={{ marginTop: 12 }}>
           <p>Memory minted! Transaction Hash:</p>
           <a
             href={`https://basescan.org/tx/${txHash}`}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             {txHash}
           </a>
