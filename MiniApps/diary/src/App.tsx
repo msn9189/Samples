@@ -11,11 +11,11 @@ import "./index.css";
 import { sdk } from "@farcaster/miniapp-sdk";
 
 // -----------------------------
-// App behavior (Diary Miniapp):
-// 1) User writes a memory.
-// 2) Memory is pinned to IPFS (Pinata).
-// 3) IPFS hash is sent to the smart contract mintDiary(ipfsHash).
-// 4) Transaction hash is shown to the user after mining.
+// Diary Miniapp flow:
+// 1) User writes memory
+// 2) Pin to IPFS
+// 3) Mint NFT via contract (Base network)
+// 4) Show transaction hash
 // -----------------------------
 
 const CONTRACT_ADDRESS = "0x5df26eAa1753cf24Ead918b3372Be1f0C517dDE9";
@@ -26,38 +26,33 @@ const CONTRACT_ABI = parseAbi([
 ]);
 
 export default function App() {
-  // --- app state
+  // --- state
   const [memory, setMemory] = useState<string>("");
   const [status, setStatus] = useState<string>("");
+  const [isSending, setIsSending] = useState(false);
 
   // --- wagmi hooks
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
 
-  const { writeContract, data: txHashData } = useWriteContract({
-    address: CONTRACT_ADDRESS,
-    abi: CONTRACT_ABI,
-    functionName: "mintDiary",
-  } as any);
+  // writeContract hook
+  const writeResult = useWriteContract();
+  const writeContract = writeResult.writeContract;
+  const txHash = writeResult.data as string | undefined;
 
-  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
-    hash: txHashData,
-  });
+  // wait for tx receipt
+  const { isLoading: waitingForReceipt, isSuccess } =
+    useWaitForTransactionReceipt({
+      hash: txHash as any,
+    });
 
-  // --- Call sdk.actions.ready() as early as possible after mount
-  // This informs the Farcaster frame that the miniapp is ready and the splash screen may be hidden.
   useEffect(() => {
+    // notify Farcaster that app is ready
     (async () => {
       try {
-        if (!sdk || !sdk.actions || typeof sdk.actions.ready !== "function") {
-          console.warn(
-            "Farcaster miniapp SDK not available or sdk.actions.ready missing"
-          );
-          return;
-        }
+        if (!sdk?.actions?.ready) return;
 
-        // Keep this call minimal and fast. No long awaits here.
         await sdk.actions.ready({
           image:
             import.meta.env.VITE_FRAME_IMAGE_URL ||
@@ -72,7 +67,7 @@ export default function App() {
     })();
   }, []);
 
-  // جایگزین pinToPinata در client (App.tsx)
+  // pin to IPFS
   const pinToPinata = async (text: string) => {
     try {
       const resp = await fetch("/api/pinToIpfs", {
@@ -85,36 +80,58 @@ export default function App() {
         console.error("Pin API error:", data);
         return null;
       }
-      // data.IpfsHash => CID
-      return data.IpfsHash;
+      return data.IpfsHash; // CID
     } catch (err) {
       console.error("Pin API request failed:", err);
       return null;
     }
   };
 
-  // --- handle mint (via contract write)
+  // handle submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!memory) return setStatus("Write something first");
 
+    if (!isConnected) {
+      try {
+        await connect({ connector: connectors[0] });
+      } catch (err: any) {
+        return setStatus("Please connect your wallet.");
+      }
+    }
+
     setStatus("Pinning to IPFS...");
-    const ipfsHash = await pinToPinata(memory);
-    if (!ipfsHash) return setStatus("Pin failed");
+    const cid = await pinToPinata(memory);
+    if (!cid) return setStatus("Pin failed");
+
+    const payload = cid.startsWith("ipfs://") ? cid : `ipfs://${cid}`;
 
     setStatus("Sending transaction...");
-
     try {
-      await writeContract({
-        args: [ipfsHash],
+      setIsSending(true);
+
+      writeContract({
+        address: CONTRACT_ADDRESS,
+        abi: CONTRACT_ABI,
+        functionName: "mintDiary",
+        args: [payload],
       } as any);
 
       setStatus("Transaction sent, waiting for receipt...");
     } catch (err: any) {
       console.error("writeContract failed:", err);
+      setIsSending(false);
       setStatus(`Error: ${err?.message ?? String(err)}`);
     }
   };
+
+  // when receipt is confirmed
+  useEffect(() => {
+    if (isSuccess) {
+      setIsSending(false);
+      setStatus("Memory minted successfully!");
+    }
+  }, [isSuccess]);
 
   return (
     <div className="app-container">
@@ -144,21 +161,26 @@ export default function App() {
           style={{ width: "100%", padding: "10px" }}
         />
         <div style={{ marginTop: 8 }}>
-          <button type="submit" disabled={isLoading || !isConnected}>
-            {isLoading ? "Minting..." : "Mint Memory on Base"}
+          <button
+            type="submit"
+            disabled={isSending || waitingForReceipt || !isConnected}
+          >
+            {isSending || waitingForReceipt
+              ? "Minting..."
+              : "Mint Memory on Base"}
           </button>
         </div>
       </form>
 
-      {isSuccess && txHashData && (
+      {isSuccess && txHash && (
         <div style={{ marginTop: 12 }}>
           <p>Memory minted! Transaction Hash:</p>
           <a
-            href={`https://basescan.org/tx/${txHashData}`}
+            href={`https://basescan.org/tx/${txHash}`}
             target="_blank"
             rel="noreferrer"
           >
-            {txHashData}
+            {txHash}
           </a>
         </div>
       )}
