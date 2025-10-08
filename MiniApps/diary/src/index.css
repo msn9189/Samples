@@ -422,6 +422,51 @@ body {
   }
 }
 
+/* Generated Image Styles */
+.generated-image-section {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.generated-image-section h4 {
+  color: #374151;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.image-container {
+  margin: 1rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: white;
+  padding: 0.5rem;
+}
+
+.generated-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+}
+
+.image-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.image-actions .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  min-width: 140px;
+}
+
 /* Focus styles for keyboard navigation */
 .btn:focus-visible,
 .memory-textarea:focus-visible,
