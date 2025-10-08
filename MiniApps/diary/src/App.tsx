@@ -5,7 +5,9 @@ import {
   useDisconnect,
   useWriteContract,
   useWaitForTransactionReceipt,
+  useSwitchChain,
 } from "wagmi";
+import { base } from "wagmi/chains";
 import { parseAbi } from "viem";
 import "./index.css";
 import { sdk } from "@farcaster/miniapp-sdk";
@@ -39,6 +41,7 @@ export default function App() {
   const { address, isConnected } = useAccount(); // Hook to get wallet address and connection status
   const { connect, connectors } = useConnect(); // Hook to handle wallet connection
   const { disconnect } = useDisconnect(); // Hook to disconnect wallet
+  const { switchChain } = useSwitchChain();
 
   // Contract write hook
   const writeResult = useWriteContract(); // Hook to interact with the smart contract
@@ -128,7 +131,7 @@ export default function App() {
     // Connect Wallet if not connected
     if (!isConnected) {
       try {
-        await connect({ connector: connectors[0] }); // Attempt to connect wallet
+        await connect({ connector: connectors[0], chainId: base.id }); // Attempt to connect wallet on Base
       } catch (err: any) {
         return setStatus("Please connect your wallet."); // Show error if connection fails
       }
@@ -151,11 +154,19 @@ export default function App() {
     try {
       setIsSending(true); // Set pending flag
 
+      // Ensure wallet is on Base before sending tx
+      try {
+        await switchChain({ chainId: base.id });
+      } catch (e) {
+        // ignore if already on Base or switch unsupported; passing chainId below will prompt
+      }
+
       writeContract({
         address: CONTRACT_ADDRESS,
         abi: CONTRACT_ABI,
         functionName: "mintDiary",
         args: [payload], // Pass IPFS hash to contract
+        chainId: base.id,
       } as any);
 
       setStatus("Transaction sent, waiting for receipt..."); // Update status
