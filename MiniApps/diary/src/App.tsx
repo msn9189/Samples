@@ -32,6 +32,9 @@ export default function App() {
   const [status, setStatus] = useState<string>(""); // State to display status messages to user
   const [isSending, setIsSending] = useState(false); // State to track if a transaction is being sent
 
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null); // State to store generated image
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false); // State to track image generation
+
   // --- wagmi wallet connection hooks
   const { address, isConnected } = useAccount(); // Hook to get wallet address and connection status
   const { connect, connectors } = useConnect(); // Hook to handle wallet connection
@@ -89,6 +92,34 @@ export default function App() {
     }
   };
 
+  // generate image based on memory text
+  const generateImageFromMemory = async (text: string) => {
+    try {
+      setIsGeneratingImage(true);
+      setStatus("Generating your memory image...");
+
+      const resp = await fetch("/api/generateImage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ memory: text }),
+      });
+
+      const data = await resp.json();
+      if (!resp.ok) {
+        console.error("Image generation API error:", data);
+        return null;
+      }
+
+      setGeneratedImage(data.image);
+      return data.image;
+    } catch (err) {
+      console.error("Image generation request failed:", err);
+      return null;
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
+
   // handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission
@@ -103,14 +134,19 @@ export default function App() {
       }
     }
 
-    // Step 1: Pin tp IPFS
+    // Step 1: Generate image from memory
+    setStatus("Generating your memory image..."); // Update status
+    const image = await generateImageFromMemory(memory); // Generate image from memory
+    if (!image) return setStatus("Image generation failed"); // Handle image generation failure
+
+    // Step 2: Pin to IPFS
     setStatus("Pinning to IPFS..."); // Update status
     const cid = await pinToPinata(memory); // Pin memory to IPFS
     if (!cid) return setStatus("Pin failed"); // Handle pinning failure
 
     const payload = cid.startsWith("ipfs://") ? cid : `ipfs://${cid}`; // Format CID
 
-    // Step 2 Call smart contract
+    // Step 3: Call smart contract
     setStatus("Sending transaction..."); // Update status
     try {
       setIsSending(true); // Set pending flag
@@ -223,12 +259,21 @@ export default function App() {
 
           <button
             type="submit"
-            className={`btn btn-primary btn-large ${isSending || waitingForReceipt ? "loading" : ""}`}
+            className={`btn btn-primary btn-large ${isSending || waitingForReceipt || isGeneratingImage ? "loading" : ""}`}
             disabled={
-              isSending || waitingForReceipt || !isConnected || !memory.trim()
+              isSending ||
+              waitingForReceipt ||
+              isGeneratingImage ||
+              !isConnected ||
+              !memory.trim()
             }
           >
-            {isSending || waitingForReceipt ? (
+            {isGeneratingImage ? (
+              <>
+                <div className="btn-spinner"></div>
+                Creating Your Image...
+              </>
+            ) : isSending || waitingForReceipt ? (
               <>
                 <div className="btn-spinner"></div>
                 Minting Memory...
@@ -236,7 +281,7 @@ export default function App() {
             ) : (
               <>
                 <span className="btn-icon">🎨</span>
-                Mint Memory on Base
+                Create & Mint Memory
               </>
             )}
           </button>
@@ -253,6 +298,43 @@ export default function App() {
               <p className="success-description">
                 Your memory has been preserved as an NFT on the Base network.
               </p>
+
+              {/* Generated Image Display */}
+              {generatedImage && (
+                <div className="generated-image-section">
+                  <h4>Your Memory Image:</h4>
+                  <div className="image-container">
+                    <img
+                      src={generatedImage}
+                      alt="Generated memory image"
+                      className="generated-image"
+                    />
+                  </div>
+                  <div className="image-actions">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => {
+                        const link = document.createElement("a");
+                        link.href = generatedImage;
+                        link.download = `memory-${Date.now()}.png`;
+                        link.click();
+                      }}
+                    >
+                      📥 Download Image
+                    </button>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => {
+                        navigator.clipboard.writeText(generatedImage);
+                        setStatus("Image copied to clipboard!");
+                      }}
+                    >
+                      📋 Copy Image
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="transaction-info">
                 <span className="transaction-label">Transaction Hash:</span>
                 <a
