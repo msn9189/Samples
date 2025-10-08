@@ -1,4 +1,9 @@
 export default async function handler(req: any, res: any) {
+  if (!process.env.HUGGING_FACE_API_KEY) {
+    return res.status(500).json({
+      error: "Server not configured: missing HUGGING_FACE_API_KEY",
+    });
+  }
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -14,8 +19,9 @@ export default async function handler(req: any, res: any) {
     const prompt = `A beautiful, artistic illustration representing the memory: "${memory}". The image should be warm, nostalgic, and emotionally evocative. Style: digital art, soft colors, dreamy atmosphere.`;
 
     // Use Hugging Face Inference API for Stable Diffusion
+    // wait_for_model=true blocks until the model is ready instead of returning 503 during cold start
     const response = await fetch(
-      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0?wait_for_model=true",
       {
         method: "POST",
         headers: {
@@ -35,7 +41,12 @@ export default async function handler(req: any, res: any) {
     );
 
     if (!response.ok) {
-      throw new Error(`Hugging Face API error: ${response.status}`);
+      const text = await response.text().catch(() => "");
+      return res.status(response.status).json({
+        error: "Hugging Face API error",
+        status: response.status,
+        details: text || undefined,
+      });
     }
 
     const imageBuffer = await response.arrayBuffer();
