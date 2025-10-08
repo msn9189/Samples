@@ -23,7 +23,7 @@ const CONTRACT_ADDRESS = "0x5df26eAa1753cf24Ead918b3372Be1f0C517dDE9"; // Smart 
 const CONTRACT_ABI = parseAbi([
   "function mintDiary(string memory ipfsHash) public returns (uint256)", // Function to mint a diary NFT
   "event DiaryMinted(uint256 indexed tokenId, address indexed recipient, string ipfsHash)", // Event emitted on minting
-  "function tokenIds(uint256 tokenId) public view returns (uint256)",  // Function to get token IDs
+  "function tokenIds(uint256 tokenId) public view returns (uint256)", // Function to get token IDs
 ]);
 
 export default function App() {
@@ -35,10 +35,10 @@ export default function App() {
   // --- wagmi wallet connection hooks
   const { address, isConnected } = useAccount(); // Hook to get wallet address and connection status
   const { connect, connectors } = useConnect(); // Hook to handle wallet connection
-  const { disconnect } = useDisconnect();  // Hook to disconnect wallet
+  const { disconnect } = useDisconnect(); // Hook to disconnect wallet
 
   // Contract write hook
-  const writeResult = useWriteContract();  // Hook to interact with the smart contract
+  const writeResult = useWriteContract(); // Hook to interact with the smart contract
   const writeContract = writeResult.writeContract; // Function to trigger contract function call
   const txHash = writeResult.data as string | undefined; // Transaction hash from the contract call
 
@@ -48,10 +48,8 @@ export default function App() {
       hash: txHash as any,
     }); // Wait for transaction receipt using the hash
 
-
   // Farcaster Miniapp initialization
-  useEffect(() => { 
-
+  useEffect(() => {
     (async () => {
       try {
         if (!sdk?.actions?.ready) return; // Check if sdk.actions.ready is available
@@ -126,8 +124,8 @@ export default function App() {
 
       setStatus("Transaction sent, waiting for receipt..."); // Update status
     } catch (err: any) {
-      console.error("writeContract failed:", err);  // Log contract call error
-      setIsSending(false);  // Reset sending flag
+      console.error("writeContract failed:", err); // Log contract call error
+      setIsSending(false); // Reset sending flag
       setStatus(`Error: ${err?.message ?? String(err)}`); // Show error message
     }
   };
@@ -138,63 +136,139 @@ export default function App() {
       setIsSending(false); // Reset sending flag
       setStatus("Memory minted successfully!"); // Update status on success
     }
-  }, [isSuccess]);  // Run when isSuccess changes
+  }, [isSuccess]); // Run when isSuccess changes
 
   // Render UI
   return (
     <div className="app-container">
-      <h1>Diary Miniapp</h1>
-
-      {/* Wallet connection section */}
-      <div style={{ marginBottom: 12 }}>
-        {isConnected ? (
-          <div>
-            <span>Connected: {address}</span>
-            <button onClick={() => disconnect()}>Disconnect</button>
-          </div>
-        ) : (
-          <button onClick={() => connect({ connector: connectors[0] })}>
-            Connect Wallet
-          </button>
-        )}
+      <div className="header">
+        <div className="logo">
+          <h1>📖 Diary Miniapp</h1>
+          <p className="subtitle">Preserve your memories as NFTs on Base</p>
+        </div>
       </div>
 
-      <p>{status}</p>
+      <div className="main-content">
+        {/* Wallet connection section */}
+        <div className="wallet-section">
+          {isConnected ? (
+            <div className="wallet-connected">
+              <div className="wallet-info">
+                <div className="wallet-status">
+                  <span className="status-dot connected"></span>
+                  <span className="status-text">Connected</span>
+                </div>
+                <div className="wallet-address">
+                  {address?.slice(0, 6)}...{address?.slice(-4)}
+                </div>
+              </div>
+              <button
+                className="btn btn-secondary"
+                onClick={() => disconnect()}
+              >
+                Disconnect
+              </button>
+            </div>
+          ) : (
+            <div className="wallet-disconnected">
+              <div className="wallet-prompt">
+                <span className="wallet-icon">🔗</span>
+                <span>Connect your wallet to mint memories</span>
+              </div>
+              <button
+                className="btn btn-primary"
+                onClick={() => connect({ connector: connectors[0] })}
+              >
+                Connect Wallet
+              </button>
+            </div>
+          )}
+        </div>
 
-      {/* Memory input form*/}
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={memory}
-          onChange={(e) => setMemory(e.target.value)}
-          placeholder="Write your memory here..."
-          rows={5}
-          style={{ width: "100%", padding: "10px" }}
-        />
-        <div style={{ marginTop: 8 }}>
+        {/* Status messages */}
+        {status && (
+          <div
+            className={`status-message ${isSending || waitingForReceipt ? "loading" : isSuccess ? "success" : "info"}`}
+          >
+            <div className="status-content">
+              {isSending || waitingForReceipt ? (
+                <div className="loading-spinner"></div>
+              ) : isSuccess ? (
+                <span className="status-icon">✅</span>
+              ) : (
+                <span className="status-icon">ℹ️</span>
+              )}
+              <span>{status}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Memory input form */}
+        <form onSubmit={handleSubmit} className="memory-form">
+          <div className="form-group">
+            <label htmlFor="memory" className="form-label">
+              Share a Memory
+            </label>
+            <textarea
+              id="memory"
+              value={memory}
+              onChange={(e) => setMemory(e.target.value)}
+              placeholder="What's on your mind? Share a moment, a thought, or a memory you'd like to preserve forever..."
+              rows={6}
+              className="memory-textarea"
+              disabled={isSending || waitingForReceipt}
+            />
+            <div className="character-count">{memory.length} characters</div>
+          </div>
+
           <button
             type="submit"
-            disabled={isSending || waitingForReceipt || !isConnected}
+            className={`btn btn-primary btn-large ${isSending || waitingForReceipt ? "loading" : ""}`}
+            disabled={
+              isSending || waitingForReceipt || !isConnected || !memory.trim()
+            }
           >
-            {isSending || waitingForReceipt
-              ? "Minting..."
-              : "Mint Memory on Base"}
+            {isSending || waitingForReceipt ? (
+              <>
+                <div className="btn-spinner"></div>
+                Minting Memory...
+              </>
+            ) : (
+              <>
+                <span className="btn-icon">🎨</span>
+                Mint Memory on Base
+              </>
+            )}
           </button>
-        </div>
-      </form>
+        </form>
 
-      {/* Show ts hash after success*/}
-      {isSuccess && txHash && (
-        <div style={{ marginTop: 12 }}>
-          <p>Memory minted! Transaction Hash:</p>
-          <a
-            href={`https://basescan.org/tx/${txHash}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {txHash}
-          </a>
-        </div>
-      )}
+        {/* Success section */}
+        {isSuccess && txHash && (
+          <div className="success-section">
+            <div className="success-card">
+              <div className="success-header">
+                <span className="success-icon">🎉</span>
+                <h3>Memory Minted Successfully!</h3>
+              </div>
+              <p className="success-description">
+                Your memory has been preserved as an NFT on the Base network.
+              </p>
+              <div className="transaction-info">
+                <span className="transaction-label">Transaction Hash:</span>
+                <a
+                  href={`https://basescan.org/tx/${txHash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transaction-link"
+                >
+                  {txHash}
+                  <span className="external-link">↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
