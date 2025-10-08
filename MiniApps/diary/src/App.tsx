@@ -131,7 +131,10 @@ export default function App() {
     // Connect Wallet if not connected
     if (!isConnected) {
       try {
-        await connect({ connector: connectors[0], chainId: base.id }); // Attempt to connect wallet on Base
+        // Prefer Farcaster Frame connector when available
+        const preferred =
+          connectors.find((c) => c.id === "frame") ?? connectors[0];
+        await connect({ connector: preferred, chainId: base.id }); // Attempt to connect wallet on Base
       } catch (err: any) {
         return setStatus("Please connect your wallet."); // Show error if connection fails
       }
