@@ -227,7 +227,21 @@ export default function App() {
               </div>
               <button
                 className="btn btn-primary"
-                onClick={() => connect({ connector: connectors[0] })}
+                onClick={async () => {
+                  try {
+                    if (isConnected) await disconnect();
+                    const injectedC = connectors.find(
+                      (c) => c.id === "injected"
+                    );
+                    const wcC = connectors.find(
+                      (c) => c.id === "walletConnect"
+                    );
+                    const preferred = injectedC ?? wcC ?? connectors[0];
+                    await connect({ connector: preferred, chainId: base.id });
+                  } catch (err: any) {
+                    setStatus(err?.message ?? "Failed to connect");
+                  }
+                }}
               >
                 Connect Wallet
               </button>
