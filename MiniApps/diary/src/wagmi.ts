@@ -9,7 +9,8 @@ export const config = createConfig({
     frame(), // Enable Farcaster in-app wallet connector
     injected(),
     walletConnect({
-      projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID,
+      projectId:
+        (import.meta.env.VITE_WALLETCONNECT_PROJECT_ID as string) || "",
       metadata: {
         name: "Diary MiniApp",
         description: "A MiniApp to write and mint memories on Base network",
