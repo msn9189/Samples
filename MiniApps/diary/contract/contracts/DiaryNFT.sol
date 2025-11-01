@@ -7,6 +7,11 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // Define th DiaryNFT contract, inheriting from ERC721 to create NFTs.
 import "hardhat/console.sol";
 
+/**
+ * @title DiaryNFT
+ * @author nazii.eth
+ * @notice This contract allows you to mint Diary NFTs with IPFS hashes as metadata.
+ */
 contract DiaryNFT is ERC721 {
 
     // Private counter to track the next available token ID for minting.
