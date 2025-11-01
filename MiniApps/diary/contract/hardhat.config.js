@@ -1,5 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
 /** @type import('hardhat/config').HardhatUserConfig */
+require("@nomicfoundation/hardhat-verify");
 
 const { vars } = require("hardhat/config");
 const { base } = require("viem/chains");
