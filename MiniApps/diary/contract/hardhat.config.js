@@ -8,6 +8,7 @@ const { base } = require("viem/chains");
 const INFURA_API_KEY = vars.get("INFURA_API_KEY");
 
 const PRIVATE_KEY = vars.get("PRIVATE_KEY");
+const ETHERSCAN_API_KEY = vars.get("ETHERSCAN_API_KEY");
 
 module.exports = {
   solidity: "0.8.28",
