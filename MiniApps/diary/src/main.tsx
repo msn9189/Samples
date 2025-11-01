@@ -7,8 +7,12 @@ import App from "./App.tsx";
 import { config } from "./wagmi.ts";
 import "./index.css";
 
-
 const queryClient = new QueryClient();
+
+/**
+ * Main entry point for the React application.
+ * Initializes the ReactDOM root and renders the App component.
+ */
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -17,5 +21,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <App />
       </QueryClientProvider>
     </WagmiProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
