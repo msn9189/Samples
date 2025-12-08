@@ -204,6 +204,13 @@ export default function App() {
     }
   }, [isSuccess]); // Run when isSuccess changes
 
+  
+  useEffect(() => {
+    if (balance !== undefined) {
+      setMemoryCount(Number(balance) || 0);
+    }
+  }, [balance]);
+
   // Render UI
   return (
     <div className="app-container">
