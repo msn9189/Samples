@@ -211,6 +211,12 @@ export default function App() {
     }
   }, [balance]);
 
+  const handleProfileClick = () => {
+    if (memoryCount > 0) {
+      setShowMemoriesPage(true);
+    }
+  };
+
   // Render UI
   return (
     <div className="app-container">
