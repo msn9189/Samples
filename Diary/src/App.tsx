@@ -294,33 +294,30 @@ export default function App() {
             </div>
           </div>
         )}
-        
-        
+
         {/* Profile Card */}
-        {
-          isConnected && (
-            <div className="profile-card">
-              <div className="profile-info" onClick={handleProfileClick}>
-                <img
-                  src={profileImage || "/DiaryLogo.jpg"}
-                  alt="Profile"
-                  className="profile-picture"
-                />
-                <div className="profile-details">
-                  <div className="profile-name">
-                    {userName || `${address?.slice(0, 6)}...${address?.slice(-4)}`}
-                  </div>
+        {isConnected && (
+          <div className="profile-card">
+            <div className="profile-info" onClick={handleProfileClick}>
+              <img
+                src={profileImage || "/DiaryLogo.jpg"}
+                alt="Profile"
+                className="profile-picture"
+              />
+              <div className="profile-details">
+                <div className="profile-name">
+                  {userName ||
+                    `${address?.slice(0, 6)}...${address?.slice(-4)}`}
                 </div>
               </div>
-              <div className="profile-memories">
-                <div className="memories-label">Memories</div>
-                <div className="memories-count">{memoryCount}</div>
-                <div className="memories-label">number of minted</div>
-              </div>
             </div>
-          )}
-
-
+            <div className="profile-memories">
+              <div className="memories-label">Memories</div>
+              <div className="memories-count">{memoryCount}</div>
+              <div className="memories-label">number of minted</div>
+            </div>
+          </div>
+        )}
 
         {/* Memory input form */}
         <form onSubmit={handleSubmit} className="memory-form">
@@ -328,6 +325,20 @@ export default function App() {
             <label htmlFor="memory" className="form-label">
               Share a Memory
             </label>
+            <div className="form-group">
+              <label htmlFor="title" className="form-label">
+                Title:
+              </label>
+              <input
+                id="title"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Memory title..."
+                className="memory-textarea"
+                disabled={isSending || waitingForReceipt}
+              />
+            </div>
             <textarea
               id="memory"
               value={memory}
