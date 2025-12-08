@@ -49,6 +49,7 @@ export default function App() {
   const [userName, setUserName] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>("");
   const [showMemoriesPage, setShowMemoriesPage] = useState(false);
+  const [title, setTitle] = useState<string>("");
 
   // Contract write hook
   const writeResult = useWriteContract(); // Hook to interact with the smart contract
