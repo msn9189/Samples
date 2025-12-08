@@ -530,3 +530,70 @@ body {
   color: #666;
   font-style: italic;
 }
+
+
+/* Profile Card */
+.profile-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.profile-info:hover {
+  opacity: 0.8;
+}
+
+.profile-picture {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ff9ec5;
+  cursor: pointer;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.profile-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+}
+
+.profile-memories {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.memories-label {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.memories-count {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ff9ec5;
+}
