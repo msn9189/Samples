@@ -23,11 +23,39 @@ body {
 
 .app-container {
   max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  min-height: 100vh;
+  margin: 20px auto;
+  padding: 30px;
+  min-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  position: relative;
+  border: 10px solid transparent;
+  background-clip: padding-box;
+}
+
+.app-container::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: repeating-linear-gradient(
+    45deg,
+    #ff9ec5 0px,
+    #ff9ec5 15px,
+    #ffd6e8 15px,
+    #ffd6e8 30px,
+    #ffe8e8 30px,
+    #ffe8e8 45px,
+    #fff0f5 45px,
+    #fff0f5 60px
+  );
+  border-radius: 25px;
+  z-index: -1;
 }
 
 /* Header styles */
