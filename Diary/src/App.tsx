@@ -61,6 +61,15 @@ export default function App() {
       hash: txHash as any,
     }); // Wait for transaction receipt using the hash
 
+    const { data: balance } = useReadContract({
+      address: CONTRACT_ADDRESS,
+      abi: CONTRACT_ABI,
+      functionName: "balanceOf",
+      args: address ? [address] : undefined,
+      query: {
+        enabled: !!address && isConnected,
+      },
+    });
   // Farcaster Miniapp initialization
   useEffect(() => {
     (async () => {
