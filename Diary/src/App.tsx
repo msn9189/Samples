@@ -27,6 +27,7 @@ const CONTRACT_ABI = parseAbi([
   "function mintDiary(string memory ipfsHash) public returns (uint256)", // Function to mint a diary NFT
   "event DiaryMinted(uint256 indexed tokenId, address indexed recipient, string ipfsHash)", // Event emitted on minting
   "function tokenIds(uint256 tokenId) public view returns (uint256)", // Function to get token IDs
+  "function balanceOf(address owner) public view returns (uint256)",
 ]);
 
 export default function App() {
