@@ -44,6 +44,11 @@ export default function App() {
   const { disconnect } = useDisconnect(); // Hook to disconnect wallet
   const { switchChain } = useSwitchChain();
 
+  const [memoryCount, setMemoryCount] = useState<number>(0);
+  const [userName, setUserName] = useState<string>("");
+  const [profileImage, setProfileImage] = useState<string>("");
+  const [showMemoriesPage, setShowMemoriesPage] = useState(false);
+
   // Contract write hook
   const writeResult = useWriteContract(); // Hook to interact with the smart contract
   const writeContract = writeResult.writeContract; // Function to trigger contract function call
