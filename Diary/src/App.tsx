@@ -191,11 +191,9 @@ export default function App() {
   // Render UI
   return (
     <div className="app-container">
-      <div className="header">
-        <div className="logo">
-          <h1>📖 Diary Miniapp</h1>
-          <p className="subtitle">Preserve your memories as NFTs on Base</p>
-        </div>
+      <div className="app-header">
+        <h1 className="app-name">Your Miniapp Name</h1>
+        <p className="app-creator">by Creator Name</p>
       </div>
 
       <div className="main-content">
