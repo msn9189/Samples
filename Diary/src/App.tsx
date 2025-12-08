@@ -6,6 +6,7 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
   useSwitchChain,
+  useReadContract,
 } from "wagmi";
 import { base } from "wagmi/chains";
 import { parseAbi } from "viem";
