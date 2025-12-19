@@ -222,7 +222,7 @@ export default function App() {
   return (
     <div className="app-container">
       <div className="app-header">
-        <h1 className="app-name">Your Miniapp Name</h1>
+        <h1 className="app-name">Diary MiniApp</h1>
         <p className="app-creator">by Creator Name</p>
       </div>
 
