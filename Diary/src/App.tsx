@@ -46,8 +46,8 @@ export default function App() {
   const { switchChain } = useSwitchChain();
 
   const [memoryCount, setMemoryCount] = useState<number>(0);
-  const [userName, setUserName] = useState<string>("");
-  const [profileImage, setProfileImage] = useState<string>("");
+  const [userName] = useState<string>("");
+  const [profileImage] = useState<string>("");
   const [showMemoriesPage, setShowMemoriesPage] = useState(false);
   const [title, setTitle] = useState<string>("");
 
