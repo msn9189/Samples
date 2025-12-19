@@ -360,7 +360,7 @@ export default function App() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Memory title..."
-                    className="memory-textarea"
+                    className="title-input"
                     disabled={isSending || waitingForReceipt}
                   />
                 </div>
