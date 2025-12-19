@@ -227,222 +227,244 @@ export default function App() {
       </div>
 
       <div className="main-content">
-        {/* Wallet connection section */}
-        <div className="wallet-section">
-          {isConnected ? (
-            <div className="wallet-connected">
-              <div className="wallet-info">
-                <div className="wallet-status">
-                  <span className="status-dot connected"></span>
-                  <span className="status-text">Connected</span>
+        {showMemoriesPage ? (
+          // Todo: Memories page
+          <div>
+            <h2>Your Memories</h2>
+            <p>You have {memoryCount} minted memories</p>
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowMemoriesPage(false)}
+            >
+              Back
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Wallet connection section */}
+            <div className="wallet-section">
+              {isConnected ? (
+                <div className="wallet-connected">
+                  <div className="wallet-info">
+                    <div className="wallet-status">
+                      <span className="status-dot connected"></span>
+                      <span className="status-text">Connected</span>
+                    </div>
+                    <div className="wallet-address">
+                      {address?.slice(0, 6)}...{address?.slice(-4)}
+                    </div>
+                  </div>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => disconnect()}
+                  >
+                    Disconnect
+                  </button>
                 </div>
-                <div className="wallet-address">
-                  {address?.slice(0, 6)}...{address?.slice(-4)}
-                </div>
-              </div>
-              <button
-                className="btn btn-secondary"
-                onClick={() => disconnect()}
-              >
-                Disconnect
-              </button>
-            </div>
-          ) : (
-            <div className="wallet-disconnected">
-              <div className="wallet-prompt">
-                <span className="wallet-icon">🔗</span>
-                <span>Connect your wallet to mint memories</span>
-              </div>
-              <button
-                className="btn btn-primary"
-                onClick={async () => {
-                  try {
-                    if (isConnected) await disconnect();
-                    const injectedC = connectors.find(
-                      (c) => c.id === "injected"
-                    );
-                    const wcC = connectors.find(
-                      (c) => c.id === "walletConnect"
-                    );
-                    const preferred = injectedC ?? wcC ?? connectors[0];
-                    await connect({ connector: preferred, chainId: base.id });
-                  } catch (err: any) {
-                    setStatus(err?.message ?? "Failed to connect");
-                  }
-                }}
-              >
-                Connect Wallet
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Status messages */}
-        {status && (
-          <div
-            className={`status-message ${isSending || waitingForReceipt ? "loading" : isSuccess ? "success" : "info"}`}
-          >
-            <div className="status-content">
-              {isSending || waitingForReceipt ? (
-                <div className="loading-spinner"></div>
-              ) : isSuccess ? (
-                <span className="status-icon">✅</span>
               ) : (
-                <span className="status-icon">ℹ️</span>
+                <div className="wallet-disconnected">
+                  <div className="wallet-prompt">
+                    <span className="wallet-icon">🔗</span>
+                    <span>Connect your wallet to mint memories</span>
+                  </div>
+                  <button
+                    className="btn btn-primary"
+                    onClick={async () => {
+                      try {
+                        if (isConnected) await disconnect();
+                        const injectedC = connectors.find(
+                          (c) => c.id === "injected"
+                        );
+                        const wcC = connectors.find(
+                          (c) => c.id === "walletConnect"
+                        );
+                        const preferred = injectedC ?? wcC ?? connectors[0];
+                        await connect({
+                          connector: preferred,
+                          chainId: base.id,
+                        });
+                      } catch (err: any) {
+                        setStatus(err?.message ?? "Failed to connect");
+                      }
+                    }}
+                  >
+                    Connect Wallet
+                  </button>
+                </div>
               )}
-              <span>{status}</span>
             </div>
-          </div>
-        )}
 
-        {/* Profile Card */}
-        {isConnected && (
-          <div className="profile-card">
-            <div className="profile-info" onClick={handleProfileClick}>
-              <img
-                src={profileImage || "/DiaryLogo.jpg"}
-                alt="Profile"
-                className="profile-picture"
-              />
-              <div className="profile-details">
-                <div className="profile-name">
-                  {userName ||
-                    `${address?.slice(0, 6)}...${address?.slice(-4)}`}
+            {/* Status messages */}
+            {status && (
+              <div
+                className={`status-message ${isSending || waitingForReceipt ? "loading" : isSuccess ? "success" : "info"}`}
+              >
+                <div className="status-content">
+                  {isSending || waitingForReceipt ? (
+                    <div className="loading-spinner"></div>
+                  ) : isSuccess ? (
+                    <span className="status-icon">✅</span>
+                  ) : (
+                    <span className="status-icon">ℹ️</span>
+                  )}
+                  <span>{status}</span>
                 </div>
               </div>
-            </div>
-            <div className="profile-memories">
-              <div className="memories-label">Memories</div>
-              <div className="memories-count">{memoryCount}</div>
-              <div className="memories-label">number of minted</div>
-            </div>
-          </div>
-        )}
-
-        {/* Memory input form */}
-        <form onSubmit={handleSubmit} className="memory-form">
-          <div className="form-group">
-            <label htmlFor="memory" className="form-label">
-              Share a Memory
-            </label>
-            <div className="form-group">
-              <label htmlFor="title" className="form-label">
-                Title:
-              </label>
-              <input
-                id="title"
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Memory title..."
-                className="memory-textarea"
-                disabled={isSending || waitingForReceipt}
-              />
-            </div>
-            <textarea
-              id="memory"
-              value={memory}
-              onChange={(e) => setMemory(e.target.value)}
-              placeholder="What's on your mind? Share a moment, a thought, or a memory you'd like to preserve forever..."
-              rows={6}
-              className="memory-textarea"
-              disabled={isSending || waitingForReceipt}
-            />
-            <div className="character-count">{memory.length} characters</div>
-          </div>
-
-          <button
-            type="submit"
-            className={`btn btn-primary btn-large ${isSending || waitingForReceipt || isGeneratingImage ? "loading" : ""}`}
-            disabled={
-              isSending ||
-              waitingForReceipt ||
-              isGeneratingImage ||
-              !isConnected ||
-              !memory.trim()
-            }
-          >
-            {isGeneratingImage ? (
-              <>
-                <div className="btn-spinner"></div>
-                Creating Your Image...
-              </>
-            ) : isSending || waitingForReceipt ? (
-              <>
-                <div className="btn-spinner"></div>
-                Minting Memory...
-              </>
-            ) : (
-              <>
-                <span className="btn-icon">🎨</span>
-                Create & Mint Memory
-              </>
             )}
-          </button>
-        </form>
 
-        {/* Success section */}
-        {isSuccess && txHash && (
-          <div className="success-section">
-            <div className="success-card">
-              <div className="success-header">
-                <span className="success-icon">🎉</span>
-                <h3>Memory Minted Successfully!</h3>
-              </div>
-              <p className="success-description">
-                Your memory has been preserved as an NFT on the Base network.
-              </p>
-
-              {/* Generated Image Display */}
-              {generatedImage && (
-                <div className="generated-image-section">
-                  <h4>Your Memory Image:</h4>
-                  <div className="image-container">
-                    <img
-                      src={generatedImage}
-                      alt="Generated memory image"
-                      className="generated-image"
-                    />
-                  </div>
-                  <div className="image-actions">
-                    <button
-                      className="btn btn-secondary"
-                      onClick={() => {
-                        const link = document.createElement("a");
-                        link.href = generatedImage;
-                        link.download = `memory-${Date.now()}.png`;
-                        link.click();
-                      }}
-                    >
-                      📥 Download Image
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      onClick={() => {
-                        navigator.clipboard.writeText(generatedImage);
-                        setStatus("Image copied to clipboard!");
-                      }}
-                    >
-                      📋 Copy Image
-                    </button>
+            {/* Profile Card */}
+            {isConnected && (
+              <div className="profile-card">
+                <div className="profile-info" onClick={handleProfileClick}>
+                  <img
+                    src={profileImage || "/DiaryLogo.jpg"}
+                    alt="Profile"
+                    className="profile-picture"
+                  />
+                  <div className="profile-details">
+                    <div className="profile-name">
+                      {userName ||
+                        `${address?.slice(0, 6)}...${address?.slice(-4)}`}
+                    </div>
                   </div>
                 </div>
-              )}
-
-              <div className="transaction-info">
-                <span className="transaction-label">Transaction Hash:</span>
-                <a
-                  href={`https://basescan.org/tx/${txHash}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transaction-link"
-                >
-                  {txHash}
-                  <span className="external-link">↗</span>
-                </a>
+                <div className="profile-memories">
+                  <div className="memories-label">Memories</div>
+                  <div className="memories-count">{memoryCount}</div>
+                  <div className="memories-label">number of minted</div>
+                </div>
               </div>
-            </div>
-          </div>
+            )}
+
+            {/* Memory input form */}
+            <form onSubmit={handleSubmit} className="memory-form">
+              <div className="form-group">
+                <label htmlFor="memory" className="form-label">
+                  Share a Memory
+                </label>
+                <div className="form-group">
+                  <label htmlFor="title" className="form-label">
+                    Title:
+                  </label>
+                  <input
+                    id="title"
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Memory title..."
+                    className="memory-textarea"
+                    disabled={isSending || waitingForReceipt}
+                  />
+                </div>
+                <textarea
+                  id="memory"
+                  value={memory}
+                  onChange={(e) => setMemory(e.target.value)}
+                  placeholder="What's on your mind? Share a moment, a thought, or a memory you'd like to preserve forever..."
+                  rows={6}
+                  className="memory-textarea"
+                  disabled={isSending || waitingForReceipt}
+                />
+                <div className="character-count">
+                  {memory.length} characters
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className={`btn btn-primary btn-large ${isSending || waitingForReceipt || isGeneratingImage ? "loading" : ""}`}
+                disabled={
+                  isSending ||
+                  waitingForReceipt ||
+                  isGeneratingImage ||
+                  !isConnected ||
+                  !memory.trim()
+                }
+              >
+                {isGeneratingImage ? (
+                  <>
+                    <div className="btn-spinner"></div>
+                    Creating Your Image...
+                  </>
+                ) : isSending || waitingForReceipt ? (
+                  <>
+                    <div className="btn-spinner"></div>
+                    Minting Memory...
+                  </>
+                ) : (
+                  <>
+                    <span className="btn-icon">🎨</span>
+                    Create & Mint Memory
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* Success section */}
+            {isSuccess && txHash && (
+              <div className="success-section">
+                <div className="success-card">
+                  <div className="success-header">
+                    <span className="success-icon">🎉</span>
+                    <h3>Memory Minted Successfully!</h3>
+                  </div>
+                  <p className="success-description">
+                    Your memory has been preserved as an NFT on the Base
+                    network.
+                  </p>
+
+                  {/* Generated Image Display */}
+                  {generatedImage && (
+                    <div className="generated-image-section">
+                      <h4>Your Memory Image:</h4>
+                      <div className="image-container">
+                        <img
+                          src={generatedImage}
+                          alt="Generated memory image"
+                          className="generated-image"
+                        />
+                      </div>
+                      <div className="image-actions">
+                        <button
+                          className="btn btn-secondary"
+                          onClick={() => {
+                            const link = document.createElement("a");
+                            link.href = generatedImage;
+                            link.download = `memory-${Date.now()}.png`;
+                            link.click();
+                          }}
+                        >
+                          📥 Download Image
+                        </button>
+                        <button
+                          className="btn btn-secondary"
+                          onClick={() => {
+                            navigator.clipboard.writeText(generatedImage);
+                            setStatus("Image copied to clipboard!");
+                          }}
+                        >
+                          📋 Copy Image
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="transaction-info">
+                    <span className="transaction-label">Transaction Hash:</span>
+                    <a
+                      href={`https://basescan.org/tx/${txHash}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="transaction-link"
+                    >
+                      {txHash}
+                      <span className="external-link">↗</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
