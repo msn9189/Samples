@@ -242,26 +242,8 @@ export default function App() {
         ) : (
           <>
             {/* Wallet connection section */}
-            <div className="wallet-section">
-              {isConnected ? (
-                <div className="wallet-connected">
-                  <div className="wallet-info">
-                    <div className="wallet-status">
-                      <span className="status-dot connected"></span>
-                      <span className="status-text">Connected</span>
-                    </div>
-                    <div className="wallet-address">
-                      {address?.slice(0, 6)}...{address?.slice(-4)}
-                    </div>
-                  </div>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => disconnect()}
-                  >
-                    Disconnect
-                  </button>
-                </div>
-              ) : (
+            {!isConnected && (
+              <div className="wallet-section">
                 <div className="wallet-disconnected">
                   <div className="wallet-prompt">
                     <span className="wallet-icon">🔗</span>
@@ -291,8 +273,8 @@ export default function App() {
                     Connect Wallet
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Status messages */}
             {status && (
