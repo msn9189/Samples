@@ -584,12 +584,11 @@ body {
   color: #3ccf91;
 }
 
-/* Floral background for cards */
-/* Solid background for cards - no patterns */
+/* Medium green background for cards */
 .wallet-section,
 .memory-form,
 .success-section,
 .profile-card,
 .status-message {
-  background: #ffffff;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
 }
