@@ -43,17 +43,11 @@ body {
   left: -10px;
   right: -10px;
   bottom: -10px;
-  background: repeating-linear-gradient(
-    45deg,
-    #ff9ec5 0px,
-    #ff9ec5 15px,
-    #ffd6e8 15px,
-    #ffd6e8 30px,
-    #ffe8e8 30px,
-    #ffe8e8 45px,
-    #fff0f5 45px,
-    #fff0f5 60px
-  );
+  background:
+    url("data:image/svg+xml,%3Csvg width='70' height='70' viewBox='0 0 70 70' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%237bdcb5' fill-opacity='0.14'%3E%3Ccircle cx='18' cy='18' r='4'/%3E%3Ccircle cx='52' cy='22' r='3'/%3E%3Ccircle cx='28' cy='54' r='3'/%3E%3C/g%3E%3C/svg%3E")
+      repeat,
+    #ffffff;
+  background-size: 70px 70px, auto;
   border-radius: 25px;
   z-index: -1;
 }
