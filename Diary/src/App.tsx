@@ -212,31 +212,31 @@ export default function App() {
     }
   }, [balance]);
 
-useEffect(() => {
-  async function loadFarcasterUser() {
-    try {
-      // Check SDK docs for the exact way to get user context.
-      // This is a template – adjust the field names to match the SDK.
-      const ctx: any = (sdk as any)?.context ?? (sdk as any)?.state;
+// useEffect(() => {
+//   async function loadFarcasterUser() {
+//     try {
+//       // Check SDK docs for the exact way to get user context.
+//       // This is a template – adjust the field names to match the SDK.
+//       const ctx: any = (sdk as any)?.context ?? (sdk as any)?.state;
 
-      if (!ctx || !ctx.user) return;
+//       if (!ctx || !ctx.user) return;
 
-      const user = ctx.user;
+//       const user = ctx.user;
 
-      // Replace `username` and `pfpUrl` with the real field names from the SDK
-      if (user.username) {
-        setUserName(user.username);
-      }
-      if (user.pfpUrl) {
-        setProfileImage(user.pfpUrl);
-      }
-    } catch (err) {
-      console.error("Failed to load Farcaster user profile", err);
-    }
-  }
+//       // Replace `username` and `pfpUrl` with the real field names from the SDK
+//       if (user.username) {
+//         setUserName(user.username);
+//       }
+//       if (user.pfpUrl) {
+//         setProfileImage(user.pfpUrl);
+//       }
+//     } catch (err) {
+//       console.error("Failed to load Farcaster user profile", err);
+//     }
+//   }
 
-  loadFarcasterUser();
-}, []);
+//   loadFarcasterUser();
+// }, []);
 
   const handleProfileClick = () => {
     if (memoryCount > 0) {
