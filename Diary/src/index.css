@@ -306,6 +306,16 @@ body {
   cursor: not-allowed;
 }
 
+/* Title input - single line width */
+.title-input {
+  width: auto;
+  max-width: 400px;
+  display: inline-block;
+  min-height: auto;
+  height: auto;
+  padding: 0.75rem 1rem;
+}
+
 .character-count {
   text-align: right;
   font-size: 0.85rem;
@@ -584,15 +594,7 @@ body {
   color: #3ccf91;
 }
 
-/* Title input - single line width */
-.title-input {
-  width: auto;
-  max-width: 400px;
-  display: inline-block;
-  min-height: auto;
-  height: auto;
-  padding: 0.75rem 1rem;
-}
+
 
 /* Medium green background for cards */
 .wallet-section,
