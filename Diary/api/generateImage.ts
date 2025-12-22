@@ -1,5 +1,9 @@
 export default async function handler(req: any, res: any) {
-  if (!process.env.HUGGING_FACE_API_KEY) {
+  // Access env var in a runtime-safe way (Edge runtimes may not expose `process`)
+  const HF_KEY =
+    (typeof process !== "undefined" && process?.env?.HUGGING_FACE_API_KEY) ||
+    (globalThis as any)?.HUGGING_FACE_API_KEY;
+  if (!HF_KEY) {
     return res.status(500).json({
       error: "Server not configured: missing HUGGING_FACE_API_KEY",
     });
@@ -50,7 +54,36 @@ export default async function handler(req: any, res: any) {
     }
 
     const imageBuffer = await response.arrayBuffer();
-    const base64Image = Buffer.from(imageBuffer).toString("base64");
+
+    // Convert ArrayBuffer to base64 in a runtime-safe way (works in edge and node)
+    function arrayBufferToBase64(buffer: ArrayBuffer) {
+      try {
+        // Prefer browser `btoa` if available
+        if (typeof btoa === "function") {
+          let binary = "";
+          const bytes = new Uint8Array(buffer);
+          const len = bytes.byteLength;
+          for (let i = 0; i < len; i++) binary += String.fromCharCode(bytes[i]);
+          return btoa(binary);
+        }
+      } catch (e) {
+        // fallthrough to Buffer if available
+      }
+
+      // Node.js Buffer fallback
+      try {
+        // @ts-ignore Buffer may be available in Node runtimes
+        return Buffer.from(new Uint8Array(buffer)).toString("base64");
+      } catch (e) {
+        console.error("Failed to convert image buffer to base64:", e);
+        return null;
+      }
+    }
+
+    const base64Image = arrayBufferToBase64(imageBuffer);
+    if (!base64Image) {
+      return res.status(500).json({ error: "Failed to encode image buffer" });
+    }
 
     res.status(200).json({
       success: true,
