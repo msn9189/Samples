@@ -62,15 +62,15 @@ export default function App() {
       hash: txHash as any,
     }); // Wait for transaction receipt using the hash
 
-    const { data: balance } = useReadContract({
-      address: CONTRACT_ADDRESS,
-      abi: CONTRACT_ABI,
-      functionName: "balanceOf",
-      args: address ? [address] : undefined,
-      query: {
-        enabled: !!address && isConnected,
-      },
-    });
+  const { data: balance } = useReadContract({
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !!address && isConnected,
+    },
+  });
   // Farcaster Miniapp initialization
   useEffect(() => {
     (async () => {
@@ -143,7 +143,12 @@ export default function App() {
       }
 
       if (!resp.ok) {
-        const errMsg = data?.error || data?.details || data?.raw || resp.statusText || `HTTP ${resp.status}`;
+        const errMsg =
+          data?.error ||
+          data?.details ||
+          data?.raw ||
+          resp.statusText ||
+          `HTTP ${resp.status}`;
         console.error("Image generation API error:", data || resp.statusText);
         setStatus(`Image generation failed: ${errMsg}`);
         return null;
@@ -231,38 +236,37 @@ export default function App() {
     }
   }, [isSuccess]); // Run when isSuccess changes
 
-  
   useEffect(() => {
     if (balance !== undefined) {
       setMemoryCount(Number(balance) || 0);
     }
   }, [balance]);
 
-// useEffect(() => {
-//   async function loadFarcasterUser() {
-//     try {
-//       // Check SDK docs for the exact way to get user context.
-//       // This is a template – adjust the field names to match the SDK.
-//       const ctx: any = (sdk as any)?.context ?? (sdk as any)?.state;
+  // useEffect(() => {
+  //   async function loadFarcasterUser() {
+  //     try {
+  //       // Check SDK docs for the exact way to get user context.
+  //       // This is a template – adjust the field names to match the SDK.
+  //       const ctx: any = (sdk as any)?.context ?? (sdk as any)?.state;
 
-//       if (!ctx || !ctx.user) return;
+  //       if (!ctx || !ctx.user) return;
 
-//       const user = ctx.user;
+  //       const user = ctx.user;
 
-//       // Replace `username` and `pfpUrl` with the real field names from the SDK
-//       if (user.username) {
-//         setUserName(user.username);
-//       }
-//       if (user.pfpUrl) {
-//         setProfileImage(user.pfpUrl);
-//       }
-//     } catch (err) {
-//       console.error("Failed to load Farcaster user profile", err);
-//     }
-//   }
+  //       // Replace `username` and `pfpUrl` with the real field names from the SDK
+  //       if (user.username) {
+  //         setUserName(user.username);
+  //       }
+  //       if (user.pfpUrl) {
+  //         setProfileImage(user.pfpUrl);
+  //       }
+  //     } catch (err) {
+  //       console.error("Failed to load Farcaster user profile", err);
+  //     }
+  //   }
 
-//   loadFarcasterUser();
-// }, []);
+  //   loadFarcasterUser();
+  // }, []);
 
   const handleProfileClick = () => {
     if (memoryCount > 0) {
