@@ -123,10 +123,36 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ memory: text }),
       });
+      // Try to parse JSON response when possible
+      let data: any = null;
+      const contentType = resp.headers.get?.("content-type") || "";
+      if (contentType.includes("application/json")) {
+        try {
+          data = await resp.json();
+        } catch (err) {
+          console.error("Failed to parse JSON from image API response:", err);
+        }
+      } else {
+        // If server returned non-json (unexpected), capture text for diagnostics
+        try {
+          const txt = await resp.text();
+          data = { raw: txt };
+        } catch (err) {
+          console.error("Failed to read non-json image API response:", err);
+        }
+      }
 
-      const data = await resp.json();
       if (!resp.ok) {
-        console.error("Image generation API error:", data);
+        const errMsg = data?.error || data?.details || data?.raw || resp.statusText || `HTTP ${resp.status}`;
+        console.error("Image generation API error:", data || resp.statusText);
+        setStatus(`Image generation failed: ${errMsg}`);
+        return null;
+      }
+
+      if (!data || !data.image) {
+        console.error("Image generation API returned no image:", data);
+        const errMsg = data?.error || data?.details || "No image returned";
+        setStatus(`Image generation failed: ${errMsg}`);
         return null;
       }
 
