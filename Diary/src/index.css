@@ -27,7 +27,6 @@ body {
   max-width: 600px;
   margin: 20px auto;
   padding: 30px;
-  min-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
   background: white;
@@ -37,7 +36,7 @@ body {
   border: 10px solid transparent;
   background-clip: padding-box;
   max-height: 640px;
-  overflow: hidden;
+  overflow: auto; /* allow scrolling inside the frame so buttons aren't cut off */
   box-sizing: border-box;
 }
 
@@ -87,6 +86,7 @@ body {
   flex-direction: column;
   gap: 1.5rem;
   padding: 12px;
+  padding-bottom: 24px; /* ensure bottom area is visible for buttons */
 }
 
 /* Wallet section */
@@ -458,11 +458,6 @@ body {
 
   .memory-textarea {
     min-height: 100px;
-  }
-}
-@media (max-height: 720px) {
-  .app-container {
-    max-height: calc(100vh - 40px);
   }
 }
 
