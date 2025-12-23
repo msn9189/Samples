@@ -277,10 +277,6 @@ export default function App() {
   // Render UI
   return (
     <div className="app-container">
-      <div className="app-header">
-        <h1 className="app-name">Diary MiniApp</h1>
-        <p className="app-creator">by Creator Name</p>
-      </div>
 
       <div className="main-content">
         {showMemoriesPage ? (
