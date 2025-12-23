@@ -26,11 +26,10 @@ body {
 .app-container {
   max-width: 600px;
   margin: 20px auto;
-  padding: 20px; /* reduced padding to save vertical space */
-  min-height: auto; /* allow height to be flexible inside frame */
+  padding: 30px;
+  min-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
-  gap: 12px;
   background: white;
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
@@ -38,7 +37,7 @@ body {
   border: 10px solid transparent;
   background-clip: padding-box;
   max-height: 640px;
-  overflow: auto; /* allow internal scrolling so sticky works */
+  overflow: hidden;
   box-sizing: border-box;
 }
 
@@ -88,7 +87,6 @@ body {
   flex-direction: column;
   gap: 1.5rem;
   padding: 12px;
-  padding-bottom: 96px; /* reserve space for sticky button */
 }
 
 /* Wallet section */
@@ -205,13 +203,6 @@ body {
   font-size: 1.1rem;
   width: 100%;
   justify-content: center;
-  position: sticky;
-  bottom: 16px;
-  z-index: 50;
-  margin-top: 12px;
-  width: calc(100% - 32px);
-  margin-left: 16px;
-  margin-right: 16px;
 }
 
 .btn:disabled {
