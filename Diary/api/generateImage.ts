@@ -22,27 +22,26 @@ export default async function handler(req: any, res: any) {
     // Create a prompt for image generation based on the memory
     const prompt = `A beautiful, artistic illustration representing the memory: "${memory}". The image should be warm, nostalgic, and emotionally evocative. Style: digital art, soft colors, dreamy atmosphere.`;
 
-    // Use Hugging Face Inference API for Stable Diffusion
-    // wait_for_model=true blocks until the model is ready instead of returning 503 during cold start
-    const response = await fetch(
-      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0?wait_for_model=true",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
-          "Content-Type": "application/json",
+    // Use Hugging Face Router endpoint (api-inference.huggingface.co is deprecated)
+    const hfUrl =
+      "https://router.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0?wait_for_model=true";
+
+    const response = await fetch(hfUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${HF_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        inputs: prompt,
+        parameters: {
+          num_inference_steps: 20,
+          guidance_scale: 7.5,
+          width: 512,
+          height: 512,
         },
-        body: JSON.stringify({
-          inputs: prompt,
-          parameters: {
-            num_inference_steps: 20,
-            guidance_scale: 7.5,
-            width: 512,
-            height: 512,
-          },
-        }),
-      }
-    );
+      }),
+    });
 
     if (!response.ok) {
       const text = await response.text().catch(() => "");
