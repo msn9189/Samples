@@ -30,6 +30,9 @@ body {
   position: relative;
   border: 10px solid transparent;
   background-clip: padding-box;
+  max-height: 640px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .app-container::before {
@@ -70,6 +73,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding: 12px;
 }
 
 /* Wallet section */
@@ -441,6 +445,11 @@ body {
 
   .memory-textarea {
     min-height: 100px;
+  }
+}
+@media (max-height: 720px) {
+  .app-container {
+    max-height: calc(100vh - 40px);
   }
 }
 
